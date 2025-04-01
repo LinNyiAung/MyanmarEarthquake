@@ -233,45 +233,66 @@ function App() {
             />
             <MapController selectedMarker={selectedMarker} />
             {filteredMarkers.map(marker => (
-              <Marker 
-                key={marker._id || marker.id} 
-                position={[marker.lat, marker.lng]}
-                eventHandlers={{
-                  click: () => {
-                    if (!isAddingMarker) {
-                      setSelectedMarker(marker);
-                    }
-                  },
-                }}
-              >
-                <Popup>
-                  <div>
-                    <h3>{marker.title}</h3>
-                    <p><strong>Type:</strong> {marker.type}</p>
-                    <p><strong>Status:</strong> {marker.status}</p>
-                    <p><strong>Description:</strong> {marker.description}</p>
-                    {marker.imageUrl && (
-                      <img 
-                        src={marker.imageUrl.startsWith('data:') ? marker.imageUrl : `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${marker.imageUrl}`} 
-                        alt="Damage" 
-                        style={{ maxWidth: '100%', maxHeight: '150px' }} 
-                      />
-                    )}
-                    <div className="popup-actions">
-                      <select 
-                        value={marker.status}
-                        onChange={(e) => handleUpdateMarkerStatus(marker._id || marker.id, e.target.value)}
-                      >
-                        <option value="needsHelp">Needs Help</option>
-                        <option value="inProgress">Help In Progress</option>
-                        <option value="resolved">Resolved</option>
-                      </select>
-                      <button onClick={() => handleDeleteMarker(marker._id || marker.id)}>Delete</button>
-                    </div>
-                  </div>
-                </Popup>
-              </Marker>
+  <Marker 
+    key={marker._id || marker.id} 
+    position={[marker.lat, marker.lng]}
+    eventHandlers={{
+      click: () => {
+        if (!isAddingMarker) {
+          setSelectedMarker(marker);
+        }
+      },
+    }}
+  >
+    <Popup>
+      <div>
+        <h3>{marker.title}</h3>
+        <p><strong>Type:</strong> {marker.type}</p>
+        <p><strong>Status:</strong> {marker.status}</p>
+        <p><strong>Description:</strong> {marker.description}</p>
+        
+        {/* Display images from the images array if available */}
+        {marker.images && marker.images.length > 0 ? (
+          <div className="popup-images">
+            {marker.images.map((imgSrc, idx) => (
+              <img 
+                key={idx}
+                src={imgSrc.startsWith('data:') 
+                  ? imgSrc 
+                  : `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${imgSrc}`
+                } 
+                alt={`Damage ${idx + 1}`} 
+                style={{ maxWidth: '100%', maxHeight: '150px', marginBottom: '5px' }} 
+              />
             ))}
+          </div>
+        ) : marker.imageUrl ? (
+          // Fallback to legacy imageUrl if images array is empty
+          <img 
+            src={marker.imageUrl.startsWith('data:') 
+              ? marker.imageUrl 
+              : `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${marker.imageUrl}`
+            } 
+            alt="Damage" 
+            style={{ maxWidth: '100%', maxHeight: '150px' }} 
+          />
+        ) : null}
+        
+        <div className="popup-actions">
+          <select 
+            value={marker.status}
+            onChange={(e) => handleUpdateMarkerStatus(marker._id || marker.id, e.target.value)}
+          >
+            <option value="needsHelp">Needs Help</option>
+            <option value="inProgress">Help In Progress</option>
+            <option value="resolved">Resolved</option>
+          </select>
+          <button onClick={() => handleDeleteMarker(marker._id || marker.id)}>Delete</button>
+        </div>
+      </div>
+    </Popup>
+  </Marker>
+))}
             {newMarkerPosition && (
               <Marker position={[newMarkerPosition.lat, newMarkerPosition.lng]}>
                 <Popup>

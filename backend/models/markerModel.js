@@ -29,8 +29,9 @@ const markerSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  imageUrl: {
-    type: String
+  images: {
+    type: [String],
+    default: []
   },
   createdAt: {
     type: Date,

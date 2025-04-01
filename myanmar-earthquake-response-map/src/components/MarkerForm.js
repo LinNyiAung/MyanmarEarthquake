@@ -7,11 +7,11 @@ function MarkerForm({ onSubmit, onCancel, coordinates }) {
     type: 'damage',
     description: '',
     status: 'needsHelp',
-    imageUrl: ''
+    images: []
   });
   
-  const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const MAX_IMAGES = 5;
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,21 +22,43 @@ function MarkerForm({ onSubmit, onCancel, coordinates }) {
   };
   
   const handleImageChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const selectedImage = e.target.files[0];
-      setImage(selectedImage);
+    if (e.target.files) {
+      const selectedFiles = Array.from(e.target.files);
       
-      // Create an image preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-        setFormData(prev => ({
-          ...prev,
-          imageUrl: reader.result
-        }));
-      };
-      reader.readAsDataURL(selectedImage);
+      // Limit to MAX_IMAGES total (existing + new)
+      const totalImages = imagePreviews.length + selectedFiles.length;
+      if (totalImages > MAX_IMAGES) {
+        alert(`You can only upload up to ${MAX_IMAGES} images. Please select fewer images.`);
+        return;
+      }
+      
+      // Process each selected image
+      selectedFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          // Add this image to previews
+          setImagePreviews(prev => [...prev, reader.result]);
+          
+          // Add to form data
+          setFormData(prev => ({
+            ...prev,
+            images: [...prev.images, reader.result]
+          }));
+        };
+        reader.readAsDataURL(file);
+      });
     }
+  };
+  
+  const removeImage = (index) => {
+    // Remove from previews
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
+    
+    // Remove from form data
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index)
+    }));
   };
   
   const handleSubmit = (e) => {
@@ -110,17 +132,34 @@ function MarkerForm({ onSubmit, onCancel, coordinates }) {
         </div>
         
         <div className="form-group">
-          <label htmlFor="image">Upload Image (optional)</label>
+          <label htmlFor="images">Upload Images (up to 5)</label>
           <input
             type="file"
-            id="image"
-            name="image"
+            id="images"
+            name="images"
             accept="image/*"
             onChange={handleImageChange}
+            multiple
+            disabled={imagePreviews.length >= MAX_IMAGES}
           />
-          {imagePreview && (
-            <div className="image-preview">
-              <img src={imagePreview} alt="Preview" />
+          <p className="image-count">
+            {imagePreviews.length} of {MAX_IMAGES} images selected
+          </p>
+          
+          {imagePreviews.length > 0 && (
+            <div className="image-previews">
+              {imagePreviews.map((preview, index) => (
+                <div key={index} className="image-preview-container">
+                  <img src={preview} alt={`Preview ${index + 1}`} />
+                  <button 
+                    type="button" 
+                    className="remove-image-btn" 
+                    onClick={() => removeImage(index)}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
             </div>
           )}
         </div>

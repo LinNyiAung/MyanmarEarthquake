@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit per file
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
@@ -66,6 +66,29 @@ const handleBase64Image = async (imageString) => {
   }
 };
 
+// Process multiple base64 images
+const handleMultipleBase64Images = async (imagesArray) => {
+  if (!Array.isArray(imagesArray)) {
+    return [];
+  }
+
+  const imagePaths = [];
+  
+  for (const imageString of imagesArray) {
+    if (imageString && imageString.startsWith('data:image/')) {
+      const imagePath = await handleBase64Image(imageString);
+      if (imagePath) {
+        imagePaths.push(imagePath);
+      }
+    } else if (imageString && imageString.startsWith('/uploads/')) {
+      // If it's already a saved path, keep it as is
+      imagePaths.push(imageString);
+    }
+  }
+  
+  return imagePaths;
+};
+
 // GET all markers
 router.get('/', async (req, res) => {
   try {
@@ -94,11 +117,26 @@ router.post('/', async (req, res) => {
   try {
     const markerData = { ...req.body };
     
-    // Handle base64 image if present
+    // Handle multiple base64 images if present
+    if (markerData.images && Array.isArray(markerData.images)) {
+      // Limit to 5 images
+      if (markerData.images.length > 5) {
+        return res.status(400).json({ message: 'Maximum 5 images allowed per marker' });
+      }
+      
+      const imagePaths = await handleMultipleBase64Images(markerData.images);
+      markerData.images = imagePaths;
+    }
+    
+    // Handle legacy imageUrl if present (for backward compatibility)
     if (markerData.imageUrl && markerData.imageUrl.startsWith('data:image/')) {
       const imagePath = await handleBase64Image(markerData.imageUrl);
       if (imagePath) {
-        markerData.imageUrl = imagePath;
+        // Add to images array
+        if (!markerData.images) markerData.images = [];
+        markerData.images.push(imagePath);
+        // Remove the old field
+        delete markerData.imageUrl;
       }
     }
     
@@ -115,12 +153,33 @@ router.put('/:id', async (req, res) => {
   try {
     const markerData = { ...req.body, updatedAt: Date.now() };
     
-    // Handle base64 image if present and changed
-    if (markerData.imageUrl && markerData.imageUrl.startsWith('data:image/')) {
-      const imagePath = await handleBase64Image(markerData.imageUrl);
-      if (imagePath) {
-        markerData.imageUrl = imagePath;
+    // Handle multiple base64 images if present
+    if (markerData.images && Array.isArray(markerData.images)) {
+      // Limit to 5 images
+      if (markerData.images.length > 5) {
+        return res.status(400).json({ message: 'Maximum 5 images allowed per marker' });
       }
+      
+      const imagePaths = await handleMultipleBase64Images(markerData.images);
+      markerData.images = imagePaths;
+    }
+    
+    // Handle legacy imageUrl if present (for backward compatibility)
+    if (markerData.imageUrl) {
+      if (markerData.imageUrl.startsWith('data:image/')) {
+        const imagePath = await handleBase64Image(markerData.imageUrl);
+        if (imagePath) {
+          // Add to images array
+          if (!markerData.images) markerData.images = [];
+          markerData.images.push(imagePath);
+        }
+      } else if (markerData.imageUrl.startsWith('/uploads/')) {
+        // It's already a valid path
+        if (!markerData.images) markerData.images = [];
+        markerData.images.push(markerData.imageUrl);
+      }
+      // Remove the old field
+      delete markerData.imageUrl;
     }
     
     const updatedMarker = await Marker.findByIdAndUpdate(
@@ -148,7 +207,19 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ message: 'Marker not found' });
     }
     
-    // Delete associated image if it exists
+    // Delete associated images if they exist
+    if (marker.images && Array.isArray(marker.images)) {
+      marker.images.forEach(imagePath => {
+        if (imagePath && imagePath.startsWith('/uploads/')) {
+          const fullPath = path.join(__dirname, '..', imagePath);
+          if (fs.existsSync(fullPath)) {
+            fs.unlinkSync(fullPath);
+          }
+        }
+      });
+    }
+    
+    // Also check for legacy imageUrl
     if (marker.imageUrl && marker.imageUrl.startsWith('/uploads/')) {
       const imagePath = path.join(__dirname, '..', marker.imageUrl);
       if (fs.existsSync(imagePath)) {
