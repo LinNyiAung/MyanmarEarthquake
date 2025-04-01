@@ -1,198 +1,198 @@
 .marker-form {
-    background-color: white;
-    border-radius: 8px;
-    padding: 20px;
-    width: 90%;
-    max-width: 500px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  }
-  
-  .marker-form h2 {
-    margin-top: 0;
-    margin-bottom: 5px;
-    color: #2f80ed;
-  }
-
-
-  .form-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-  }
-  
-  
-  .form-instruction {
-    margin-bottom: 15px;
-    font-size: 0.9rem;
-    color: #666;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
-  }
-  
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-  }
-  
-  .form-group textarea {
-    resize: vertical;
-  }
-  
-  .image-preview {
-    margin-top: 10px;
-  }
-  
-  .image-preview img {
-    max-width: 100%;
-    max-height: 200px;
-    border-radius: 4px;
-  }
-  
-  .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
-  }
-  
-  .cancel-btn {
-    background-color: #e0e0e0;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .submit-btn {
-    background-color: #2f80ed;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .submit-btn:disabled {
-    background-color: #a0a0a0;
-    cursor: not-allowed;
-  }
-
-
-  .coordinates-display {
-    background-color: #f0f0f0;
-    padding: 8px 12px;
-    border-radius: 4px;
-    font-family: monospace;
-    margin-bottom: 15px;
-    font-size: 0.9rem;
-  }
-
-
-  .form-row .form-group {
-    flex: 1;
-    margin-bottom: 0;
-  }
-  
-  .form-row input {
-    width: 100%;
-  }
-  
-  .map-instruction-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    z-index: 500;
-    pointer-events: none;
-  }
-  
-  .map-instruction {
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 0 0 8px 8px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    pointer-events: auto;
-  }
-  
-  .map-instruction button {
-    background-color: #e0e0e0;
-    color: #333;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-
-  /* New styles for multiple image handling */
-.image-count {
-  font-size: 12px;
-  color: #666;
-  margin-top: 5px;
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
-.image-previews {
+.marker-form h2 {
+  margin-top: 0;
+  margin-bottom: 5px;
+  color: #2f80ed;
+}
+
+
+.form-row {
   display: flex;
-  flex-wrap: wrap;
   gap: 10px;
+  margin-bottom: 15px;
+}
+
+
+.form-instruction {
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.image-preview {
   margin-top: 10px;
 }
 
-.image-preview-container {
-  position: relative;
-  width: calc(33.333% - 10px);
-  height: 100px;
+.image-preview img {
+  max-width: 100%;
+  max-height: 200px;
   border-radius: 4px;
-  overflow: hidden;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.cancel-btn {
+  background-color: #e0e0e0;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submit-btn {
+  background-color: #2f80ed;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submit-btn:disabled {
+  background-color: #a0a0a0;
+  cursor: not-allowed;
+}
+
+
+.coordinates-display {
+  background-color: #f0f0f0;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: monospace;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+}
+
+
+.form-row .form-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.form-row input {
+  width: 100%;
+}
+
+.map-instruction-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 500;
+  pointer-events: none;
+}
+
+.map-instruction {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 0 0 8px 8px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  pointer-events: auto;
+}
+
+.map-instruction button {
+  background-color: #e0e0e0;
+  color: #333;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+
+/* New styles for multiple image handling */
+.image-count {
+font-size: 12px;
+color: #666;
+margin-top: 5px;
+}
+
+.image-previews {
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+margin-top: 10px;
+}
+
+.image-preview-container {
+position: relative;
+width: calc(33.333% - 10px);
+height: 100px;
+border-radius: 4px;
+overflow: hidden;
 }
 
 .image-preview-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+width: 100%;
+height: 100%;
+object-fit: cover;
 }
 
 .remove-image-btn {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 20px;
-  height: 20px;
-  background-color: rgba(255, 0, 0, 0.7);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 14px;
+position: absolute;
+top: 5px;
+right: 5px;
+width: 20px;
+height: 20px;
+background-color: rgba(255, 0, 0, 0.7);
+color: white;
+border: none;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+font-size: 14px;
 }
 
 /* Add some styles for popup images gallery */
 .popup-images {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-bottom: 10px;
+display: flex;
+flex-direction: column;
+gap: 5px;
+margin-bottom: 10px;
 }

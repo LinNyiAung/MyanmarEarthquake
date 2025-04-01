@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Sidebar.css';
 
-function Sidebar({ markers, onMarkerSelect, filter, setFilter, onAddNewClick, isLoading }) {
+function Sidebar({ markers, onMarkerSelect, filter, setFilter, onAddNewClick, isLoading, isOpen, toggleSidebar }) {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredMarkers = markers.filter(marker => {
@@ -23,10 +23,14 @@ function Sidebar({ markers, onMarkerSelect, filter, setFilter, onAddNewClick, is
 
   const handleMarkerClick = (marker) => {
     onMarkerSelect(marker);
+    // On mobile, close the sidebar after selecting a marker
+    if (window.innerWidth <= 768) {
+      toggleSidebar();
+    }
   };
 
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
       <div className="sidebar-header">
         <h2>Affected Areas</h2>
         <button className="add-btn" onClick={onAddNewClick} disabled={isLoading}>+ Add New</button>
