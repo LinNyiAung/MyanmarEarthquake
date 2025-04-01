@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Sidebar.css';
 
-function Sidebar({ markers, onMarkerSelect, filter, setFilter, onAddNewClick }) {
+function Sidebar({ markers, onMarkerSelect, filter, setFilter, onAddNewClick, isLoading }) {
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredMarkers = markers.filter(marker => {
@@ -18,14 +18,18 @@ function Sidebar({ markers, onMarkerSelect, filter, setFilter, onAddNewClick }) 
 
   const sortedMarkers = [...filteredMarkers].sort((a, b) => {
     // Sort by date, newest first
-    return new Date(b.date) - new Date(a.date);
+    return new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt);
   });
+
+  const handleMarkerClick = (marker) => {
+    onMarkerSelect(marker);
+  };
 
   return (
     <div className="sidebar">
       <div className="sidebar-header">
         <h2>Affected Areas</h2>
-        <button className="add-btn" onClick={onAddNewClick}>+ Add New</button>
+        <button className="add-btn" onClick={onAddNewClick} disabled={isLoading}>+ Add New</button>
       </div>
       
       <div className="search-container">
@@ -41,6 +45,7 @@ function Sidebar({ markers, onMarkerSelect, filter, setFilter, onAddNewClick }) 
         <select 
           value={filter} 
           onChange={(e) => setFilter(e.target.value)}
+          disabled={isLoading}
         >
           <option value="all">All Markers</option>
           <option value="damage">Damage Reports</option>
@@ -54,12 +59,14 @@ function Sidebar({ markers, onMarkerSelect, filter, setFilter, onAddNewClick }) 
       </div>
       
       <div className="markers-list">
-        {sortedMarkers.length > 0 ? (
+        {isLoading ? (
+          <div className="loading-indicator">Loading markers...</div>
+        ) : sortedMarkers.length > 0 ? (
           sortedMarkers.map(marker => (
             <div 
-              key={marker.id} 
+              key={marker._id || marker.id} 
               className={`marker-item ${marker.status}`}
-              onClick={() => onMarkerSelect(marker)}
+              onClick={() => handleMarkerClick(marker)}
             >
               <h3>{marker.title}</h3>
               <div className="marker-meta">
@@ -72,8 +79,8 @@ function Sidebar({ markers, onMarkerSelect, filter, setFilter, onAddNewClick }) 
                   : marker.description}
               </p>
               <div className="marker-date">
-                {new Date(marker.date).toLocaleDateString()}, 
-                {new Date(marker.date).toLocaleTimeString()}
+                {new Date(marker.date || marker.createdAt).toLocaleDateString()}, 
+                {new Date(marker.date || marker.createdAt).toLocaleTimeString()}
               </div>
             </div>
           ))

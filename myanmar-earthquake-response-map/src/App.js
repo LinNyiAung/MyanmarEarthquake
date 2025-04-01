@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import Header from './components/Header';
@@ -31,6 +31,22 @@ function MapClickHandler({ onMapClick, isAddingMarker }) {
       }
     }
   });
+  return null;
+}
+
+// Component to handle flying to selected marker
+function MapController({ selectedMarker }) {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (selectedMarker) {
+      map.flyTo([selectedMarker.lat, selectedMarker.lng], 12, {
+        animate: true,
+        duration: 1.5
+      });
+    }
+  }, [selectedMarker, map]);
+  
   return null;
 }
 
@@ -85,6 +101,13 @@ function App() {
   const startAddingMarker = () => {
     setIsAddingMarker(true);
     setNewMarkerPosition(null);
+    setIsFormOpen(false);
+  };
+
+  const handleMarkerSelect = (marker) => {
+    setSelectedMarker(marker);
+    // Close any open forms or adding marker mode
+    setIsAddingMarker(false);
     setIsFormOpen(false);
   };
 
@@ -181,7 +204,7 @@ function App() {
       <div className="main-content">
         <Sidebar 
           markers={markers} 
-          onMarkerSelect={setSelectedMarker} 
+          onMarkerSelect={handleMarkerSelect} 
           filter={filter}
           setFilter={setFilter}
           onAddNewClick={startAddingMarker}
@@ -208,6 +231,7 @@ function App() {
               onMapClick={handleMapClick} 
               isAddingMarker={isAddingMarker} 
             />
+            <MapController selectedMarker={selectedMarker} />
             {filteredMarkers.map(marker => (
               <Marker 
                 key={marker._id || marker.id} 
