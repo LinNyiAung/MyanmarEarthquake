@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://192.168.11.128:5000/api';
+const API_URL = 'https://myanmar-earthquake-api.onrender.com/api';
 
 const api = axios.create({
   baseURL: API_URL,
