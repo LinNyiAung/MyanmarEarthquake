@@ -25,6 +25,8 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
   
+  
+  
   .about-content h2 {
     color: #2f80ed;
     margin-top: 0;
@@ -35,6 +37,11 @@
   .about-text {
     font-size: 1.1rem;
     line-height: 1.7;
+  }
+
+  .help-text{
+    font-size: 1.1rem;
+    color: black;
   }
   
   .about-text p {

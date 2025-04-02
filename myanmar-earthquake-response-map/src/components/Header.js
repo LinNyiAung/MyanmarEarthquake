@@ -3,11 +3,13 @@ import React, { useState, useEffect } from 'react';
 import './Header.css';
 import About from './About';
 import EmergencyContacts from './EmergencyContacts';
+import Help from './Help'; // Import the new Help component
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [showEmergencyContacts, setShowEmergencyContacts] = useState(false);
+  const [showHelp, setShowHelp] = useState(false); // Add state for Help component
 
   // Close menu when window is resized to desktop size
   useEffect(() => {
@@ -25,7 +27,7 @@ function Header() {
 
   // Prevent body scrolling when menu is open
   useEffect(() => {
-    if (menuOpen || showAbout || showEmergencyContacts) {
+    if (menuOpen || showAbout || showEmergencyContacts || showHelp) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
@@ -34,7 +36,7 @@ function Header() {
     return () => {
       document.body.style.overflow = 'auto';
     };
-  }, [menuOpen, showAbout, showEmergencyContacts]);
+  }, [menuOpen, showAbout, showEmergencyContacts, showHelp]);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -53,6 +55,12 @@ function Header() {
   const openEmergencyContacts = (e) => {
     e.preventDefault();
     setShowEmergencyContacts(true);
+    closeMenu();
+  };
+
+  const openHelp = (e) => {
+    e.preventDefault();
+    setShowHelp(true);
     closeMenu();
   };
 
@@ -78,7 +86,7 @@ function Header() {
         <ul>
           <li><a href="#" onClick={openAbout}>About</a></li>
           <li><a href="#" onClick={openEmergencyContacts}>Emergency Contacts</a></li>
-          <li><a href="#" onClick={closeMenu}>Help</a></li>
+          <li><a href="#" onClick={openHelp}>Help</a></li>
         </ul>
       </nav>
       
@@ -93,6 +101,9 @@ function Header() {
       
       {/* Emergency Contacts modal */}
       {showEmergencyContacts && <EmergencyContacts onClose={() => setShowEmergencyContacts(false)} />}
+      
+      {/* Help modal */}
+      {showHelp && <Help onClose={() => setShowHelp(false)} />}
     </header>
   );
 }
