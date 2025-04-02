@@ -1,11 +1,13 @@
-// src/components/Header.js (modified)
+// src/components/Header.js
 import React, { useState, useEffect } from 'react';
 import './Header.css';
 import About from './About';
+import EmergencyContacts from './EmergencyContacts';
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
+  const [showEmergencyContacts, setShowEmergencyContacts] = useState(false);
 
   // Close menu when window is resized to desktop size
   useEffect(() => {
@@ -23,7 +25,7 @@ function Header() {
 
   // Prevent body scrolling when menu is open
   useEffect(() => {
-    if (menuOpen || showAbout) {
+    if (menuOpen || showAbout || showEmergencyContacts) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
@@ -32,7 +34,7 @@ function Header() {
     return () => {
       document.body.style.overflow = 'auto';
     };
-  }, [menuOpen, showAbout]);
+  }, [menuOpen, showAbout, showEmergencyContacts]);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -45,6 +47,12 @@ function Header() {
   const openAbout = (e) => {
     e.preventDefault();
     setShowAbout(true);
+    closeMenu();
+  };
+
+  const openEmergencyContacts = (e) => {
+    e.preventDefault();
+    setShowEmergencyContacts(true);
     closeMenu();
   };
 
@@ -69,7 +77,7 @@ function Header() {
       <nav className={menuOpen ? 'open' : ''}>
         <ul>
           <li><a href="#" onClick={openAbout}>About</a></li>
-          <li><a href="#" onClick={closeMenu}>Emergency Contacts</a></li>
+          <li><a href="#" onClick={openEmergencyContacts}>Emergency Contacts</a></li>
           <li><a href="#" onClick={closeMenu}>Help</a></li>
         </ul>
       </nav>
@@ -82,6 +90,9 @@ function Header() {
 
       {/* About modal */}
       {showAbout && <About onClose={() => setShowAbout(false)} />}
+      
+      {/* Emergency Contacts modal */}
+      {showEmergencyContacts && <EmergencyContacts onClose={() => setShowEmergencyContacts(false)} />}
     </header>
   );
 }
