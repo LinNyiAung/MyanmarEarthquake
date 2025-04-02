@@ -1,8 +1,11 @@
+// src/components/Header.js (modified)
 import React, { useState, useEffect } from 'react';
 import './Header.css';
+import About from './About';
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
 
   // Close menu when window is resized to desktop size
   useEffect(() => {
@@ -20,7 +23,7 @@ function Header() {
 
   // Prevent body scrolling when menu is open
   useEffect(() => {
-    if (menuOpen) {
+    if (menuOpen || showAbout) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
@@ -29,7 +32,7 @@ function Header() {
     return () => {
       document.body.style.overflow = 'auto';
     };
-  }, [menuOpen]);
+  }, [menuOpen, showAbout]);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -37,6 +40,12 @@ function Header() {
 
   const closeMenu = () => {
     setMenuOpen(false);
+  };
+
+  const openAbout = (e) => {
+    e.preventDefault();
+    setShowAbout(true);
+    closeMenu();
   };
 
   return (
@@ -59,7 +68,7 @@ function Header() {
       
       <nav className={menuOpen ? 'open' : ''}>
         <ul>
-          <li><a href="#" onClick={closeMenu}>About</a></li>
+          <li><a href="#" onClick={openAbout}>About</a></li>
           <li><a href="#" onClick={closeMenu}>Emergency Contacts</a></li>
           <li><a href="#" onClick={closeMenu}>Help</a></li>
         </ul>
@@ -70,6 +79,9 @@ function Header() {
         className={`backdrop ${menuOpen ? 'show' : ''}`} 
         onClick={closeMenu}
       ></div>
+
+      {/* About modal */}
+      {showAbout && <About onClose={() => setShowAbout(false)} />}
     </header>
   );
 }
